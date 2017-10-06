@@ -1,7 +1,7 @@
 /*!
  * angular-schema-form-bootstrap
  * @version 1.0.0-alpha.5
- * @date Sat, 29 Apr 2017 14:49:38 GMT
+ * @date Fri, 06 Oct 2017 14:36:21 GMT
  * @link https://github.com/json-schema-form/angular-schema-form-bootstrap
  * @license MIT
  * Copyright (c) 2014-2017 JSON Schema Form
@@ -9,50 +9,52 @@
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
-/******/ 	// identity function for calling harmory imports with the correct context
+/******/
+/******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
-/******/ 	// define getter function for harmory exports
+/******/
+/******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		Object.defineProperty(exports, name, {
-/******/ 			configurable: false,
-/******/ 			enumerable: true,
-/******/ 			get: getter
-/******/ 		});
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -61,286 +63,205 @@
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 22);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(18);
+__webpack_require__(17);
 
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(20).nextTick;
-var apply = Function.prototype.apply;
-var slice = Array.prototype.slice;
-var immediateIds = {};
-var nextImmediateId = 0;
-
-// DOM APIs, for completeness
-
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) { timeout.close(); };
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
-}
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(window, this._id);
-};
-
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
-
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// That's not how node.js implements it but the exposed api is the same.
-exports.setImmediate = typeof setImmediate === "function" ? setImmediate : function(fn) {
-  var id = nextImmediateId++;
-  var args = arguments.length < 2 ? false : slice.call(arguments, 1);
-
-  immediateIds[id] = true;
-
-  nextTick(function onNextTick() {
-    if (immediateIds[id]) {
-      // fn.call() is faster so we optimize for the common use-case
-      // @see http://jsperf.com/call-apply-segu
-      if (args) {
-        fn.apply(null, args);
-      } else {
-        fn.call(null);
-      }
-      // Prevent ids from leaking
-      exports.clearImmediate(id);
-    }
-  });
-
-  return id;
-};
-
-exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
-  delete immediateIds[id];
-};
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).setImmediate, __webpack_require__(1).clearImmediate))
-
-/***/ },
-/* 2 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/actions.html';
-var html = "<div class=\"btn-group schema-form-actions {{::form.htmlClass + ' ' + idClass}}\">\r\n  <input ng-repeat-start=\"item in form.items\"\r\n         type=\"submit\"\r\n         class=\"btn {{ item.style || 'btn-default' }} {{::form.fieldHtmlClass}}\"\r\n         value=\"{{item.title}}\"\r\n         ng-if=\"item.type === 'submit'\">\r\n  <button ng-repeat-end\r\n          class=\"btn {{ item.style || 'btn-default' }} {{::form.fieldHtmlClass}}\"\r\n          type=\"button\"\r\n          ng-disabled=\"form.readonly\"\r\n          ng-if=\"item.type !== 'submit'\"\r\n          ng-click=\"buttonClick($event,item)\"><span ng-if=\"item.icon\" class=\"{{item.icon}}\"></span>{{item.title}}</button>\r\n</div>\r\n";
+var html = "<div class=\"btn-group schema-form-actions {{::form.htmlClass + ' ' + idClass}}\">\n  <input ng-repeat-start=\"item in form.items\"\n         type=\"submit\"\n         class=\"btn {{ item.style || 'btn-default' }} {{::form.fieldHtmlClass}}\"\n         value=\"{{item.title}}\"\n         ng-if=\"item.type === 'submit'\">\n  <button ng-repeat-end\n          class=\"btn {{ item.style || 'btn-default' }} {{::form.fieldHtmlClass}}\"\n          type=\"button\"\n          ng-disabled=\"form.readonly\"\n          ng-if=\"item.type !== 'submit'\"\n          ng-click=\"buttonClick($event,item)\"><span ng-if=\"item.icon\" class=\"{{item.icon}}\"></span>{{item.title}}</button>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/array.html';
-var html = "<div  class=\"schema-form-array {{::form.htmlClass + ' ' + idClass}}\"\r\n      sf-field-model=\"sf-new-array\"\r\n      sf-new-array>\r\n  <label class=\"control-label\" ng-show=\"showTitle()\">{{ form.title }}</label>\r\n  <ol class=\"list-group\" sf-field-model ui-sortable=\"form.sortOptions\">\r\n    <li class=\"list-group-item {{::form.fieldHtmlClass}}\"\r\n        sf-field-model=\"ng-repeat\"\r\n        ng-repeat=\"item in $$value$$ track by $id(trackBy(item, $index))\">\r\n      <button ng-hide=\"form.readonly || form.remove === null\"\r\n              ng-click=\"deleteFromArray(item)\"\r\n              ng-disabled=\"form.schema.minItems >= modelArray.length\"\r\n              style=\"position: relative; z-index: 20;\"\r\n              type=\"button\" class=\"close pull-right\">\r\n              <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\r\n      </button>\r\n      <div schema-form-array-items sf-key-controller sf-parent-key=\"[{{form.key.join('][')}}]\" sf-index=\"{{$index}}\"></div>\r\n    </li>\r\n  </ol>\r\n  <div class=\"clearfix\" style=\"padding: 15px;\" ng-model=\"modelArray\" schema-validate=\"form\">\r\n    <div class=\"help-block\"\r\n         ng-show=\"(hasError() && errorMessage(schemaError())) || form.description\"\r\n         ng-bind-html=\"(hasError() && errorMessage(schemaError())) || form.description\"></div>\r\n\r\n    <button ng-hide=\"form.readonly || form.add === null\"\r\n            ng-click=\"appendToArray()\"\r\n            ng-disabled=\"form.schema.maxItems <= modelArray.length\"\r\n            type=\"button\"\r\n            class=\"btn {{ form.style.add || 'btn-default' }} pull-right\">\r\n      <i class=\"glyphicon glyphicon-plus\"></i>\r\n      {{ form.add || 'Add'}}\r\n    </button>\r\n  </div>\r\n</div>\r\n";
+var html = "<div  class=\"schema-form-array {{::form.htmlClass + ' ' + idClass}}\"\n      sf-field-model=\"sf-new-array\"\n      sf-new-array>\n  <label class=\"control-label\" ng-show=\"showTitle()\">{{ form.title }}</label>\n  <ol class=\"list-group\" sf-field-model ui-sortable=\"form.sortOptions\">\n    <li class=\"list-group-item {{::form.fieldHtmlClass}}\"\n        sf-field-model=\"ng-repeat\"\n        ng-repeat=\"item in $$value$$ track by $id(trackBy(item, $index))\">\n      <button ng-hide=\"form.readonly || form.remove === null\"\n              ng-click=\"deleteFromArray(item)\"\n              ng-disabled=\"form.schema.minItems >= modelArray.length\"\n              style=\"position: relative; z-index: 20;\"\n              type=\"button\" class=\"close pull-right\">\n              <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\n      </button>\n      <div schema-form-array-items sf-key-controller sf-parent-key=\"[{{form.key.join('][')}}]\" sf-index=\"{{$index}}\"></div>\n    </li>\n  </ol>\n  <div class=\"clearfix\" style=\"padding: 15px;\" ng-model=\"modelArray\" schema-validate=\"form\">\n    <div class=\"help-block\"\n         ng-show=\"(hasError() && errorMessage(schemaError())) || form.description\"\n         ng-bind-html=\"(hasError() && errorMessage(schemaError())) || form.description\"></div>\n\n    <button ng-hide=\"form.readonly || form.add === null\"\n            ng-click=\"appendToArray()\"\n            ng-disabled=\"form.schema.maxItems <= modelArray.length\"\n            type=\"button\"\n            class=\"btn {{ form.style.add || 'btn-default' }} pull-right\">\n      <i class=\"glyphicon glyphicon-plus\"></i>\n      {{ form.add || 'Add'}}\n    </button>\n  </div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/checkbox.html';
-var html = "<div class=\"checkbox schema-form-checkbox {{::form.htmlClass + ' ' + idClass}}\"\r\n     ng-class=\"{\r\n       'has-error': form.disableErrorState !== true && hasError(),\r\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\r\n       'has-feedback': form.feedback !== false,\r\n       'required': form.required === true\r\n     }\">\r\n  <label class=\"{{::form.labelHtmlClass}}\">\r\n    <input type=\"checkbox\"\r\n           sf-changed=\"form\"\r\n           ng-disabled=\"form.readonly\"\r\n           sf-field-model\r\n           schema-validate=\"form\"\r\n           class=\"{{::form.fieldHtmlClass}}\"\r\n           name=\"{{::fieldId(true, false)}}\">\r\n    <span ng-bind-html=\"form.title\"></span>\r\n  </label>\r\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\r\n</div>\r\n";
+var html = "<div class=\"checkbox schema-form-checkbox {{::form.htmlClass + ' ' + idClass}}\"\n     ng-class=\"{\n       'has-error': form.disableErrorState !== true && hasError(),\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\n       'has-feedback': form.feedback !== false,\n       'required': form.required === true\n     }\">\n  <label class=\"{{::form.labelHtmlClass}}\">\n    <input type=\"checkbox\"\n           sf-changed=\"form\"\n           ng-disabled=\"form.readonly\"\n           sf-field-model\n           schema-validate=\"form\"\n           class=\"{{::form.fieldHtmlClass}}\"\n           name=\"{{::fieldId(true, false)}}\">\n    <span ng-bind-html=\"form.title\"></span>\n  </label>\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 5 */
-/***/ function(module, exports) {
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/checkboxes.html';
-var html = "<div sf-field-model=\"sf-new-array\"\r\n     sf-new-array\r\n     class=\"form-group schema-form-checkboxes {{::form.htmlClass + ' ' + idClass}}\"\r\n     ng-class=\"{\r\n       'has-error': form.disableErrorState !== true &&  hasError(),\r\n       'has-success': form.disableSuccessState !== true &&  hasSuccess(),\r\n       'required': form.required === true\r\n     }\">\r\n  <label class=\"control-label {{::form.labelHtmlClass}}\"\r\n         sf-field-model\r\n         schema-validate=\"form\"\r\n         ng-show=\"showTitle()\">{{form.title}}</label>\r\n\r\n  <div class=\"checkbox\" ng-repeat=\"val in titleMapValues track by $index\" >\r\n    <label>\r\n      <input type=\"checkbox\"\r\n             ng-disabled=\"form.readonly\"\r\n             sf-changed=\"form\"\r\n             class=\"{{::form.fieldHtmlClass}}\"\r\n             ng-model=\"titleMapValues[$index]\"\r\n             name=\"{{::fieldId(true, false)}}\">\r\n      <span ng-bind-html=\"form.titleMap[$index].name\"></span>\r\n    </label>\r\n\r\n  </div>\r\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\r\n</div>\r\n";
+var html = "<div sf-field-model=\"sf-new-array\"\n     sf-new-array\n     class=\"form-group schema-form-checkboxes {{::form.htmlClass + ' ' + idClass}}\"\n     ng-class=\"{\n       'has-error': form.disableErrorState !== true &&  hasError(),\n       'has-success': form.disableSuccessState !== true &&  hasSuccess(),\n       'required': form.required === true\n     }\">\n  <label class=\"control-label {{::form.labelHtmlClass}}\"\n         sf-field-model\n         schema-validate=\"form\"\n         ng-show=\"showTitle()\">{{form.title}}</label>\n\n  <div class=\"checkbox\" ng-repeat=\"val in titleMapValues track by $index\" >\n    <label>\n      <input type=\"checkbox\"\n             ng-disabled=\"form.readonly\"\n             sf-changed=\"form\"\n             class=\"{{::form.fieldHtmlClass}}\"\n             ng-model=\"titleMapValues[$index]\"\n             name=\"{{::fieldId(true, false)}}\">\n      <span ng-bind-html=\"form.titleMap[$index].name\"></span>\n    </label>\n\n  </div>\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/default.html';
-var html = "<div class=\"form-group {{::form.htmlClass + ' schema-form-' + form.type + ' ' + idClass}}\"\r\n     ng-class=\"{\r\n       'has-error': form.disableErrorState !== true && hasError(),\r\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\r\n       'has-feedback': form.feedback !== false,\r\n       'required': form.required === true\r\n     }\">\r\n  <label class=\"control-label {{::form.labelHtmlClass}}\" ng-class=\"{'sr-only': !showTitle()}\" for=\"{{::fieldId(true, false)}}\">{{form.title}}</label>\r\n\r\n  <input ng-if=\"!form.fieldAddonLeft && !form.fieldAddonRight\"\r\n         ng-show=\"::form.key\"\r\n         type=\"{{::form.type}}\"\r\n         step=\"any\"\r\n         sf-changed=\"form\"\r\n         placeholder=\"{{::form.placeholder}}\"\r\n         class=\"form-control {{::form.fieldHtmlClass}}\"\r\n         id=\"{{::fieldId(true, false)}}\"\r\n         sf-field-model\r\n         ng-disabled=\"form.readonly\"\r\n         schema-validate=\"form\"\r\n         name=\"{{::fieldId(true, false)}}\"\r\n         aria-describedby=\"{{::fieldId(true, true) + '-status'}}\">\r\n\r\n  <div ng-if=\"form.fieldAddonLeft || form.fieldAddonRight\"\r\n       ng-class=\"{'input-group': (form.fieldAddonLeft || form.fieldAddonRight)}\">\r\n    <span ng-if=\"form.fieldAddonLeft\"\r\n          class=\"input-group-addon\"\r\n          ng-bind-html=\"form.fieldAddonLeft\"></span>\r\n    <input ng-show=\"::form.key\"\r\n           type=\"{{::form.type}}\"\r\n           step=\"any\"\r\n           sf-changed=\"form\"\r\n           placeholder=\"{{::form.placeholder}}\"\r\n           class=\"form-control {{::form.fieldHtmlClass}}\"\r\n           id=\"{{::fieldId(true, false)}}\"\r\n           sf-field-model\r\n           ng-disabled=\"form.readonly\"\r\n           schema-validate=\"form\"\r\n           name=\"{{::fieldId(true, false)}}\"\r\n           aria-describedby=\"{{::fieldId(true, true) + '-status'}}\">\r\n\r\n    <span ng-if=\"form.fieldAddonRight\"\r\n          class=\"input-group-addon\"\r\n          ng-bind-html=\"form.fieldAddonRight\"></span>\r\n  </div>\r\n\r\n  <span ng-if=\"form.feedback !== false\"\r\n        class=\"form-control-feedback\"\r\n        ng-class=\"evalInScope(form.feedback) || {'glyphicon': true, 'glyphicon-ok': form.disableSuccessState !== true && hasSuccess(), 'glyphicon-remove': form.disableErrorState !== true && hasError() }\"\r\n        aria-hidden=\"true\"></span>\r\n\r\n  <span ng-if=\"hasError() || hasSuccess()\"\r\n        id=\"{{::fieldId(true, true) + '-status'}}\"\r\n        class=\"sr-only\">{{ hasSuccess() ? '(success)' : '(error)' }}</span>\r\n\r\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\r\n</div>\r\n";
+var html = "<div class=\"form-group row {{::form.htmlClass + ' schema-form-' + form.type + ' ' + idClass}}\"\n     ng-class=\"{\n       'has-error': form.disableErrorState !== true && hasError(),\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\n       'has-feedback': form.feedback !== false,\n       'required': form.required === true\n     }\">\n  <label class=\"control-label col-sm-2 col-form-label {{::form.labelHtmlClass}}\" ng-class=\"{'sr-only': !showTitle()}\" for=\"{{::fieldId(true, false)}}\">{{form.title}}</label>\n\n  <div class=\"col-sm-10\">\n    <input ng-if=\"!form.fieldAddonLeft && !form.fieldAddonRight\"\n           ng-show=\"::form.key\"\n           type=\"{{::form.type}}\"\n           step=\"any\"\n           sf-changed=\"form\"\n           placeholder=\"{{::form.placeholder}}\"\n           class=\"form-control {{::form.fieldHtmlClass}}\"\n           id=\"{{::fieldId(true, false)}}\"\n           sf-field-model\n           ng-disabled=\"form.readonly\"\n           schema-validate=\"form\"\n           name=\"{{::fieldId(true, false)}}\"\n           aria-describedby=\"{{::fieldId(true, true) + '-status'}}\">\n\n    <span ng-if=\"form.feedback !== false\"\n          class=\"form-control-feedback\"\n          ng-class=\"evalInScope(form.feedback) || {'glyphicon': true, 'glyphicon-ok': form.disableSuccessState !== true && hasSuccess(), 'glyphicon-remove': form.disableErrorState !== true && hasError() }\"\n          aria-hidden=\"true\"></span>\n\n    <span ng-if=\"hasError() || hasSuccess()\"\n          id=\"{{::fieldId(true, true) + '-status'}}\"\n          class=\"sr-only\">{{ hasSuccess() ? '(success)' : '(error)' }}</span>\n  </div>\n\n  <div ng-if=\"form.fieldAddonLeft || form.fieldAddonRight\"\n       ng-class=\"{'input-group': (form.fieldAddonLeft || form.fieldAddonRight)}\">\n    <span ng-if=\"form.fieldAddonLeft\"\n          class=\"input-group-addon\"\n          ng-bind-html=\"form.fieldAddonLeft\"></span>\n    <input ng-show=\"::form.key\"\n           type=\"{{::form.type}}\"\n           step=\"any\"\n           sf-changed=\"form\"\n           placeholder=\"{{::form.placeholder}}\"\n           class=\"form-control {{::form.fieldHtmlClass}}\"\n           id=\"{{::fieldId(true, false)}}\"\n           sf-field-model\n           ng-disabled=\"form.readonly\"\n           schema-validate=\"form\"\n           name=\"{{::fieldId(true, false)}}\"\n           aria-describedby=\"{{::fieldId(true, true) + '-status'}}\">\n\n    <span ng-if=\"form.fieldAddonRight\"\n          class=\"input-group-addon\"\n          ng-bind-html=\"form.fieldAddonRight\"></span>\n  </div>\n\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 7 */
-/***/ function(module, exports) {
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/fieldset.html';
-var html = "<fieldset ng-disabled=\"form.readonly\" class=\"schema-form-fieldset {{::form.htmlClass + ' ' + idClass}}\">\r\n  <legend ng-class=\"{'sr-only': !showTitle() }\">{{ form.title }}</legend>\r\n  <div class=\"help-block\" ng-show=\"form.description\" ng-bind-html=\"form.description\"></div>\r\n</fieldset>\r\n";
+var html = "<fieldset ng-disabled=\"form.readonly\" class=\"schema-form-fieldset {{::form.htmlClass + ' ' + idClass}}\">\n  <legend ng-class=\"{'sr-only': !showTitle() }\">{{ form.title }}</legend>\n  <div class=\"help-block\" ng-show=\"form.description\" ng-bind-html=\"form.description\"></div>\n</fieldset>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/help.html';
-var html = "<div class=\"helpvalue schema-form-helpvalue {{::form.htmlClass + ' ' + idClass}}\" ng-bind-html=\"form.helpvalue\"></div>\r\n";
+var html = "<div class=\"helpvalue schema-form-helpvalue {{::form.htmlClass + ' ' + idClass}}\" ng-bind-html=\"form.helpvalue\"></div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 9 */
-/***/ function(module, exports) {
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/radio-buttons.html';
-var html = "<div class=\"form-group schema-form-radiobuttons {{::form.htmlClass + ' ' + idClass}}\"\r\n     ng-class=\"{\r\n       'has-error': form.disableErrorState !== true &&  hasError(),\r\n       'has-success': form.disableSuccessState !== true &&  hasSuccess(),\r\n       'required': form.required === true\r\n     }\">\r\n  <div>\r\n    <label class=\"control-label {{::form.labelHtmlClass}}\" ng-show=\"showTitle()\">{{form.title}}</label>\r\n  </div>\r\n  <div class=\"btn-group\">\r\n    <label sf-field-model=\"replaceAll\" class=\"btn {{ (tm.value === $$value$$) ? form.style.selected || 'btn-default' : form.style.unselected || 'btn-default'; }}\"\r\n           ng-class=\"{ active: tm.value === $$value$$ }\"\r\n           ng-repeat=\"tm in form.titleMap\">\r\n      <input type=\"radio\"\r\n             class=\"{{::form.fieldHtmlClass}}\"\r\n             sf-changed=\"form\"\r\n             style=\"display: none;\"\r\n             ng-disabled=\"form.readonly\"\r\n             sf-field-model\r\n             schema-validate=\"form\"\r\n             ng-value=\"tm.value\"\r\n             name=\"{{::fieldId(true, false)}}\">\r\n      <span ng-bind-html=\"tm.name\"></span>\r\n    </label>\r\n  </div>\r\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\r\n</div>\r\n";
+var html = "<div class=\"form-group schema-form-radiobuttons {{::form.htmlClass + ' ' + idClass}}\"\n     ng-class=\"{\n       'has-error': form.disableErrorState !== true &&  hasError(),\n       'has-success': form.disableSuccessState !== true &&  hasSuccess(),\n       'required': form.required === true\n     }\">\n  <div>\n    <label class=\"control-label {{::form.labelHtmlClass}}\" ng-show=\"showTitle()\">{{form.title}}</label>\n  </div>\n  <div class=\"btn-group\">\n    <label sf-field-model=\"replaceAll\" class=\"btn {{ (tm.value === $$value$$) ? form.style.selected || 'btn-default' : form.style.unselected || 'btn-default'; }}\"\n           ng-class=\"{ active: tm.value === $$value$$ }\"\n           ng-repeat=\"tm in form.titleMap\">\n      <input type=\"radio\"\n             class=\"{{::form.fieldHtmlClass}}\"\n             sf-changed=\"form\"\n             style=\"display: none;\"\n             ng-disabled=\"form.readonly\"\n             sf-field-model\n             schema-validate=\"form\"\n             ng-value=\"tm.value\"\n             name=\"{{::fieldId(true, false)}}\">\n      <span ng-bind-html=\"tm.name\"></span>\n    </label>\n  </div>\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 10 */
-/***/ function(module, exports) {
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/radios-inline.html';
-var html = "<div class=\"form-group schema-form-radios-inline {{::form.htmlClass + ' ' + idClass}}\"\r\n     ng-class=\"{\r\n       'has-error': form.disableErrorState !== true &&  hasError(),\r\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\r\n       'required': form.required === true\r\n     }\">\r\n  <label class=\"control-label {{::form.labelHtmlClass}}\"\r\n        ng-show=\"showTitle()\" sf-field-model\r\n        schema-validate=\"form\" >{{form.title}}</label>\r\n  <div>\r\n      <label class=\"radio-inline\" ng-repeat=\"tm in form.titleMap\" >\r\n      <input type=\"radio\"\r\n             class=\"{{::form.fieldHtmlClass}}\"\r\n             sf-changed=\"form\"\r\n             ng-disabled=\"form.readonly\"\r\n             sf-field-model\r\n             ng-value=\"tm.value\"\r\n             name=\"{{::fieldId(true, false)}}\">\r\n      <span ng-bind-html=\"tm.name\"></span>\r\n    </label>\r\n  </div>\r\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\r\n</div>\r\n";
+var html = "<div class=\"form-group schema-form-radios-inline {{::form.htmlClass + ' ' + idClass}}\"\n     ng-class=\"{\n       'has-error': form.disableErrorState !== true &&  hasError(),\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\n       'required': form.required === true\n     }\">\n  <label class=\"control-label {{::form.labelHtmlClass}}\"\n        ng-show=\"showTitle()\" sf-field-model\n        schema-validate=\"form\" >{{form.title}}</label>\n  <div>\n      <label class=\"radio-inline\" ng-repeat=\"tm in form.titleMap\" >\n      <input type=\"radio\"\n             class=\"{{::form.fieldHtmlClass}}\"\n             sf-changed=\"form\"\n             ng-disabled=\"form.readonly\"\n             sf-field-model\n             ng-value=\"tm.value\"\n             name=\"{{::fieldId(true, false)}}\">\n      <span ng-bind-html=\"tm.name\"></span>\n    </label>\n  </div>\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 11 */
-/***/ function(module, exports) {
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/radios.html';
-var html = "<div class=\"form-group schema-form-radios {{::form.htmlClass + ' ' + idClass}}\"\r\n     ng-class=\"{\r\n       'has-error': form.disableErrorState !== true &&  hasError(),\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\r\n       'required': form.required === true\r\n     }\">\r\n  <label class=\"control-label {{::form.labelHtmlClass}}\"\r\n         sf-field-model schema-validate=\"form\"\r\n         ng-show=\"showTitle()\">{{form.title}}</label>\r\n  <div class=\"radio\" ng-repeat=\"tm in form.titleMap\">\r\n    <label>\r\n      <input type=\"radio\"\r\n             class=\"{{::form.fieldHtmlClass}}\"\r\n             sf-changed=\"form\"\r\n             ng-disabled=\"form.readonly\"\r\n             sf-field-model\r\n             ng-value=\"tm.value\"\r\n             name=\"{{::fieldId(true, false)}}\">\r\n      <span ng-bind-html=\"tm.name\"></span>\r\n    </label>\r\n  </div>\r\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\r\n</div>\r\n";
+var html = "<div class=\"form-group schema-form-radios {{::form.htmlClass + ' ' + idClass}}\"\n     ng-class=\"{\n       'has-error': form.disableErrorState !== true &&  hasError(),\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\n       'required': form.required === true\n     }\">\n  <label class=\"control-label {{::form.labelHtmlClass}}\"\n         sf-field-model schema-validate=\"form\"\n         ng-show=\"showTitle()\">{{form.title}}</label>\n  <div class=\"radio\" ng-repeat=\"tm in form.titleMap\">\n    <label>\n      <input type=\"radio\"\n             class=\"{{::form.fieldHtmlClass}}\"\n             sf-changed=\"form\"\n             ng-disabled=\"form.readonly\"\n             sf-field-model\n             ng-value=\"tm.value\"\n             name=\"{{::fieldId(true, false)}}\">\n      <span ng-bind-html=\"tm.name\"></span>\n    </label>\n  </div>\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/section.html';
-var html = "<div class=\"schema-form-section {{::form.htmlClass + ' ' + idClass}}\" sf-key-controller sf-parent-key=\"[{{form.key.join('][')}}]\" sf-index=\"{{$index}}\"></div>\r\n";
+var html = "<div class=\"schema-form-section {{::form.htmlClass + ' ' + idClass}}\" sf-key-controller sf-parent-key=\"[{{form.key.join('][')}}]\" sf-index=\"{{$index}}\"></div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 13 */
-/***/ function(module, exports) {
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/select.html';
-var html = "<div class=\"form-group {{::form.htmlClass + ' ' + idClass}} schema-form-select\"\r\n     ng-class=\"{\r\n       'has-error': form.disableErrorState !== true && hasError(),\r\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\r\n       'has-feedback': form.feedback !== false,\r\n       'required': form.required === true\r\n     }\">\r\n  <label class=\"control-label {{::form.labelHtmlClass}}\" ng-show=\"showTitle()\" for=\"{{::fieldId(true, false)}}\">\r\n    {{form.title}}\r\n  </label>\r\n  <select sf-field-model\r\n          id=\"{{::fieldId(true, false)}}\"\r\n          ng-disabled=\"form.readonly\"\r\n          sf-changed=\"form\"\r\n          class=\"form-control {{::form.fieldHtmlClass}}\"\r\n          schema-validate=\"form\"\r\n          ng-options=\"item.value as item.name group by item.group for item in form.titleMap\"\r\n          name=\"{{::fieldId(true, false)}}\">\r\n  </select>\r\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\r\n</div>\r\n";
+var html = "<div class=\"form-group row {{::form.htmlClass + ' ' + idClass}} schema-form-select\"\n     ng-class=\"{\n       'has-error': form.disableErrorState !== true && hasError(),\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\n       'has-feedback': form.feedback !== false,\n       'required': form.required === true\n     }\">\n  <label class=\"control-label col-sm-2 col-form-label {{::form.labelHtmlClass}}\" ng-show=\"showTitle()\" for=\"{{::fieldId(true, false)}}\">\n    {{form.title}}\n  </label>\n  <div class=\"col-sm-10\">\n    <select sf-field-model\n            id=\"{{::fieldId(true, false)}}\"\n            ng-disabled=\"form.readonly\"\n            sf-changed=\"form\"\n            class=\"form-control {{::form.fieldHtmlClass}}\"\n            schema-validate=\"form\"\n            ng-options=\"item.value as item.name group by item.group for item in form.titleMap\"\n            name=\"{{::fieldId(true, false)}}\">\n    </select>\n  </div>\n  <div class=\"help-block\" sf-message=\"form.description\"></div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 14 */
-/***/ function(module, exports) {
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/submit.html';
-var html = "<div class=\"form-group schema-form-submit {{::form.htmlClass + ' ' + idClass}}\">\r\n  <input type=\"submit\"\r\n         class=\"btn {{ form.style || 'btn-primary' }} {{::form.fieldHtmlClass}}\"\r\n         value=\"{{form.title}}\"\r\n         ng-disabled=\"form.readonly\"\r\n         ng-if=\"form.type === 'submit'\">\r\n  <button class=\"btn {{ form.style || 'btn-default' }}\"\r\n          type=\"button\"\r\n          ng-click=\"buttonClick($event,form)\"\r\n          ng-disabled=\"form.readonly\"\r\n          ng-if=\"form.type !== 'submit'\">\r\n      <span ng-if=\"form.icon\" class=\"{{form.icon}}\"></span>\r\n      {{form.title}}\r\n  </button>\r\n</div>\r\n";
+var html = "<div class=\"form-group schema-form-submit {{::form.htmlClass + ' ' + idClass}}\">\n  <input type=\"submit\"\n         class=\"btn {{ form.style || 'btn-primary' }} {{::form.fieldHtmlClass}}\"\n         value=\"{{form.title}}\"\n         ng-disabled=\"form.readonly\"\n         ng-if=\"form.type === 'submit'\">\n  <button class=\"btn {{ form.style || 'btn-default' }}\"\n          type=\"button\"\n          ng-click=\"buttonClick($event,form)\"\n          ng-disabled=\"form.readonly\"\n          ng-if=\"form.type !== 'submit'\">\n      <span ng-if=\"form.icon\" class=\"{{form.icon}}\"></span>\n      {{form.title}}\n  </button>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/tabarray.html';
-var html = "<div ng-init=\"selected = { tab: 0 }\"\r\n     ng-model=\"modelArray\" schema-validate=\"form\"\r\n     sf-field-model=\"sf-new-array\"\r\n     sf-new-array\r\n     class=\"clearfix schema-form-tabarray schema-form-tabarray-{{form.tabType || 'left'}} {{::form.htmlClass + ' ' + idClass}}\">\r\n  <div ng-if=\"!form.tabType || form.tabType !== 'right'\"\r\n       ng-class=\"{'col-xs-3': !form.tabType || form.tabType === 'left'}\">\r\n    <ol class=\"nav nav-tabs\"\r\n        ng-class=\"{ 'tabs-left': !form.tabType || form.tabType === 'left'}\"\r\n        sf-field-model ui-sortable=\"form.sortOptions\">\r\n      <li sf-field-model=\"ng-repeat\"\r\n          ng-repeat=\"item in $$value$$ track by $index\"\r\n          ng-click=\"$event.preventDefault() || (selected.tab = $index)\"\r\n          ng-class=\"{active: selected.tab === $index}\">\r\n          <a href=\"#\">{{interp(form.title,{'$index':$index, value: item}) || $index}}</a>\r\n      </li>\r\n      <li ng-hide=\"form.readonly || form.add === null\"\r\n          ng-disabled=\"form.schema.maxItems <= modelArray.length\"\r\n          ng-click=\"$event.preventDefault() || (selected.tab = appendToArray().length - 1)\">\r\n        <a href=\"#\">\r\n          <i class=\"glyphicon glyphicon-plus\"></i>\r\n          {{ form.add || 'Add'}}\r\n          </a>\r\n      </li>\r\n    </ol>\r\n  </div>\r\n\r\n  <div ng-class=\"{'col-xs-9': !form.tabType || form.tabType === 'left' || form.tabType === 'right'}\">\r\n    <div class=\"tab-content {{::form.fieldHtmlClass}}\">\r\n      <div class=\"tab-pane clearfix tab{{selected.tab}} index{{$index}}\"\r\n           sf-field-model=\"ng-repeat\"\r\n           ng-repeat=\"item in $$value$$ track by $index\"\r\n           ng-show=\"selected.tab === $index\"\r\n           ng-class=\"{active: selected.tab === $index}\">\r\n\r\n           <div schema-form-array-items sf-key-controller sf-parent-key=\"[{{form.key.join('][')}}]\" sf-index=\"{{$index}}\"></div>\r\n\r\n           <button ng-hide=\"form.readonly || form.remove === null\"\r\n                   ng-click=\"selected.tab = deleteFromArray($index).length - 1\"\r\n                   ng-disabled=\"form.schema.minItems >= modelArray.length\"\r\n                   type=\"button\"\r\n                   class=\"btn {{ form.style.remove || 'btn-default' }} pull-right\">\r\n             <i class=\"glyphicon glyphicon-trash\"></i>\r\n             {{ form.remove || 'Remove'}}\r\n           </button>\r\n      </div>\r\n      <div class=\"help-block\"\r\n           ng-show=\"(hasError() && errorMessage(schemaError())) || form.description\"\r\n           ng-bind-html=\"(hasError() && errorMessage(schemaError())) || form.description\"></div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n\r\n  <div ng-if=\"form.tabType === 'right'\" class=\"col-xs-3\">\r\n    <ul class=\"nav nav-tabs tabs-right\">\r\n      <li  sf-field-model=\"ng-repeat\"\r\n          ng-repeat=\"item in $$value$$ track by $index\"\r\n          ng-click=\"$event.preventDefault() || (selected.tab = $index)\"\r\n          ng-class=\"{active: selected.tab === $index}\">\r\n          <a href=\"#\">{{interp(form.title,{'$index':$index, value: item}) || $index}}</a>\r\n      </li>\r\n      <li ng-hide=\"form.readonly || form.add === null\"\r\n          ng-disabled=\"form.schema.maxItems <= modelArray.length\"\r\n          ng-click=\"$event.preventDefault() || (selected.tab = appendToArray().length - 1)\">\r\n        <a href=\"#\">\r\n          <i class=\"glyphicon glyphicon-plus\"></i>\r\n          {{ form.add || 'Add'}}\r\n          </a>\r\n      </li>\r\n    </ul>\r\n  </div>\r\n\r\n</div>\r\n";
+var html = "<div ng-init=\"selected = { tab: 0 }\"\n     ng-model=\"modelArray\" schema-validate=\"form\"\n     sf-field-model=\"sf-new-array\"\n     sf-new-array\n     class=\"clearfix schema-form-tabarray schema-form-tabarray-{{form.tabType || 'left'}} {{::form.htmlClass + ' ' + idClass}}\">\n  <div ng-if=\"!form.tabType || form.tabType !== 'right'\"\n       ng-class=\"{'col-xs-3': !form.tabType || form.tabType === 'left'}\">\n    <ol class=\"nav nav-tabs\"\n        ng-class=\"{ 'tabs-left': !form.tabType || form.tabType === 'left'}\"\n        sf-field-model ui-sortable=\"form.sortOptions\">\n      <li sf-field-model=\"ng-repeat\"\n          ng-repeat=\"item in $$value$$ track by $index\"\n          ng-click=\"$event.preventDefault() || (selected.tab = $index)\"\n          ng-class=\"{active: selected.tab === $index}\">\n          <a href=\"#\">{{interp(form.title,{'$index':$index, value: item}) || $index}}</a>\n      </li>\n      <li ng-hide=\"form.readonly || form.add === null\"\n          ng-disabled=\"form.schema.maxItems <= modelArray.length\"\n          ng-click=\"$event.preventDefault() || (selected.tab = appendToArray().length - 1)\">\n        <a href=\"#\">\n          <i class=\"glyphicon glyphicon-plus\"></i>\n          {{ form.add || 'Add'}}\n          </a>\n      </li>\n    </ol>\n  </div>\n\n  <div ng-class=\"{'col-xs-9': !form.tabType || form.tabType === 'left' || form.tabType === 'right'}\">\n    <div class=\"tab-content {{::form.fieldHtmlClass}}\">\n      <div class=\"tab-pane clearfix tab{{selected.tab}} index{{$index}}\"\n           sf-field-model=\"ng-repeat\"\n           ng-repeat=\"item in $$value$$ track by $index\"\n           ng-show=\"selected.tab === $index\"\n           ng-class=\"{active: selected.tab === $index}\">\n\n           <div schema-form-array-items sf-key-controller sf-parent-key=\"[{{form.key.join('][')}}]\" sf-index=\"{{$index}}\"></div>\n\n           <button ng-hide=\"form.readonly || form.remove === null\"\n                   ng-click=\"selected.tab = deleteFromArray($index).length - 1\"\n                   ng-disabled=\"form.schema.minItems >= modelArray.length\"\n                   type=\"button\"\n                   class=\"btn {{ form.style.remove || 'btn-default' }} pull-right\">\n             <i class=\"glyphicon glyphicon-trash\"></i>\n             {{ form.remove || 'Remove'}}\n           </button>\n      </div>\n      <div class=\"help-block\"\n           ng-show=\"(hasError() && errorMessage(schemaError())) || form.description\"\n           ng-bind-html=\"(hasError() && errorMessage(schemaError())) || form.description\"></div>\n      </div>\n    </div>\n  </div>\n\n  <div ng-if=\"form.tabType === 'right'\" class=\"col-xs-3\">\n    <ul class=\"nav nav-tabs tabs-right\">\n      <li  sf-field-model=\"ng-repeat\"\n          ng-repeat=\"item in $$value$$ track by $index\"\n          ng-click=\"$event.preventDefault() || (selected.tab = $index)\"\n          ng-class=\"{active: selected.tab === $index}\">\n          <a href=\"#\">{{interp(form.title,{'$index':$index, value: item}) || $index}}</a>\n      </li>\n      <li ng-hide=\"form.readonly || form.add === null\"\n          ng-disabled=\"form.schema.maxItems <= modelArray.length\"\n          ng-click=\"$event.preventDefault() || (selected.tab = appendToArray().length - 1)\">\n        <a href=\"#\">\n          <i class=\"glyphicon glyphicon-plus\"></i>\n          {{ form.add || 'Add'}}\n          </a>\n      </li>\n    </ul>\n  </div>\n\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/tabs.html';
-var html = "<div ng-init=\"selected = { tab: 0 }\" class=\"schema-form-tabs {{::form.htmlClass + ' ' + idClass}}\">\r\n  <ul class=\"nav nav-tabs\">\r\n    <li ng-repeat=\"tab in form.tabs\"\r\n        ng-disabled=\"form.readonly\"\r\n        ng-click=\"$event.preventDefault() || (selected.tab = $index)\"\r\n        ng-class=\"{active: selected.tab === $index}\">\r\n        <a href=\"#\">{{ tab.title }}</a>\r\n    </li>\r\n  </ul>\r\n\r\n  <div class=\"tab-content {{::form.fieldHtmlClass}}\">\r\n  </div>\r\n</div>\r\n";
+var html = "<div ng-init=\"selected = { tab: 0 }\" class=\"schema-form-tabs {{::form.htmlClass + ' ' + idClass}}\">\n  <ul class=\"nav nav-tabs\">\n    <li ng-repeat=\"tab in form.tabs\"\n        ng-disabled=\"form.readonly\"\n        ng-click=\"$event.preventDefault() || (selected.tab = $index)\"\n        ng-class=\"{active: selected.tab === $index}\">\n        <a href=\"#\">{{ tab.title }}</a>\n    </li>\n  </ul>\n\n  <div class=\"tab-content {{::form.fieldHtmlClass}}\">\n  </div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
 
 var path = '/bootstrap/textarea.html';
-var html = "<div class=\"form-group has-feedback {{::form.htmlClass + ' ' + idClass}} schema-form-textarea\"\r\n     ng-class=\"{\r\n       'has-error': form.disableErrorState !== true && hasError(),\r\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\r\n       'has-feedback': form.feedback !== false,\r\n       'required': form.required === true\r\n     }\">\r\n  <label class=\"control-label {{::form.labelHtmlClass}}\" ng-class=\"{'sr-only': !showTitle()}\" for=\"{{::fieldId(true, false)}}\">{{form.title}}</label>\r\n\r\n  <textarea ng-if=\"!form.fieldAddonLeft && !form.fieldAddonRight\"\r\n            class=\"form-control {{::form.fieldHtmlClass}}\"\r\n            id=\"{{::fieldId(true, false)}}\"\r\n            sf-changed=\"form\"\r\n            ng-attr-placeholder=\"{{::form.placeholder}}\"\r\n            ng-disabled=\"form.readonly\"\r\n            sf-field-model\r\n            schema-validate=\"form\"\r\n            name=\"{{::fieldId(true, false)}}\"></textarea>\r\n\r\n  <div ng-if=\"form.fieldAddonLeft || form.fieldAddonRight\"\r\n       ng-class=\"{'input-group': (form.fieldAddonLeft || form.fieldAddonRight)}\">\r\n    <span ng-if=\"form.fieldAddonLeft\"\r\n          class=\"input-group-addon\"\r\n          ng-bind-html=\"form.fieldAddonLeft\"></span>\r\n    <textarea class=\"form-control {{::form.fieldHtmlClass}}\"\r\n              id=\"{{::fieldId(true, false)}}\"\r\n              sf-changed=\"form\"\r\n              ng-attr-placeholder=\"{{::form.placeholder}}\"\r\n              ng-disabled=\"form.readonly\"\r\n              sf-field-model\r\n              schema-validate=\"form\"\r\n              name=\"{{::fieldId(true, false)}}\"></textarea>\r\n    <span ng-if=\"form.fieldAddonRight\"\r\n          class=\"input-group-addon\"\r\n          ng-bind-html=\"form.fieldAddonRight\"></span>\r\n  </div>\r\n\r\n  <span class=\"help-block\" sf-message=\"form.description\"></span>\r\n</div>\r\n";
+var html = "<div class=\"form-group has-feedback {{::form.htmlClass + ' ' + idClass}} schema-form-textarea\"\n     ng-class=\"{\n       'has-error': form.disableErrorState !== true && hasError(),\n       'has-success': form.disableSuccessState !== true && hasSuccess(),\n       'has-feedback': form.feedback !== false,\n       'required': form.required === true\n     }\">\n  <label class=\"control-label {{::form.labelHtmlClass}}\" ng-class=\"{'sr-only': !showTitle()}\" for=\"{{::fieldId(true, false)}}\">{{form.title}}</label>\n\n  <textarea ng-if=\"!form.fieldAddonLeft && !form.fieldAddonRight\"\n            class=\"form-control {{::form.fieldHtmlClass}}\"\n            id=\"{{::fieldId(true, false)}}\"\n            sf-changed=\"form\"\n            ng-attr-placeholder=\"{{::form.placeholder}}\"\n            ng-disabled=\"form.readonly\"\n            sf-field-model\n            schema-validate=\"form\"\n            name=\"{{::fieldId(true, false)}}\"></textarea>\n\n  <div ng-if=\"form.fieldAddonLeft || form.fieldAddonRight\"\n       ng-class=\"{'input-group': (form.fieldAddonLeft || form.fieldAddonRight)}\">\n    <span ng-if=\"form.fieldAddonLeft\"\n          class=\"input-group-addon\"\n          ng-bind-html=\"form.fieldAddonLeft\"></span>\n    <textarea class=\"form-control {{::form.fieldHtmlClass}}\"\n              id=\"{{::fieldId(true, false)}}\"\n              sf-changed=\"form\"\n              ng-attr-placeholder=\"{{::form.placeholder}}\"\n              ng-disabled=\"form.readonly\"\n              sf-field-model\n              schema-validate=\"form\"\n              name=\"{{::fieldId(true, false)}}\"></textarea>\n    <span ng-if=\"form.fieldAddonRight\"\n          class=\"input-group-addon\"\n          ng-bind-html=\"form.fieldAddonRight\"></span>\n  </div>\n\n  <span class=\"help-block\" sf-message=\"form.description\"></span>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
 
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bootstrap_actions_html__ = __webpack_require__(2);
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bootstrap_actions_html__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bootstrap_actions_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__bootstrap_actions_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bootstrap_array_html__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bootstrap_array_html__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bootstrap_array_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__bootstrap_array_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bootstrap_checkbox_html__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bootstrap_checkbox_html__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bootstrap_checkbox_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__bootstrap_checkbox_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__bootstrap_checkboxes_html__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__bootstrap_checkboxes_html__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__bootstrap_checkboxes_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__bootstrap_checkboxes_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__bootstrap_default_html__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__bootstrap_default_html__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__bootstrap_default_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__bootstrap_default_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__bootstrap_fieldset_html__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__bootstrap_fieldset_html__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__bootstrap_fieldset_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__bootstrap_fieldset_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__bootstrap_help_html__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__bootstrap_help_html__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__bootstrap_help_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__bootstrap_help_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__bootstrap_radio_buttons_html__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__bootstrap_radio_buttons_html__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__bootstrap_radio_buttons_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__bootstrap_radio_buttons_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__bootstrap_radios_html__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__bootstrap_radios_html__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__bootstrap_radios_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__bootstrap_radios_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__bootstrap_radios_inline_html__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__bootstrap_radios_inline_html__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__bootstrap_radios_inline_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__bootstrap_radios_inline_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__bootstrap_section_html__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__bootstrap_section_html__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__bootstrap_section_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__bootstrap_section_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__bootstrap_select_html__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__bootstrap_select_html__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__bootstrap_select_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__bootstrap_select_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__bootstrap_submit_html__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__bootstrap_submit_html__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__bootstrap_submit_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__bootstrap_submit_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__bootstrap_tabarray_html__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__bootstrap_tabarray_html__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__bootstrap_tabarray_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13__bootstrap_tabarray_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__bootstrap_tabs_html__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__bootstrap_tabs_html__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__bootstrap_tabs_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14__bootstrap_tabs_html__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__bootstrap_textarea_html__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__bootstrap_textarea_html__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__bootstrap_textarea_html___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_15__bootstrap_textarea_html__);
 // ngtemplate-loader embeds the html on build
 
@@ -457,14 +378,73 @@ function bootstrapDecoratorConfig(
 };
 
 
-/***/ },
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var apply = Function.prototype.apply;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(window, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(21);
+exports.setImmediate = setImmediate;
+exports.clearImmediate = clearImmediate;
+
+
+/***/ }),
 /* 19 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {/*!
  * angular-schema-form
- * @version 1.0.0-alpha.5
- * @date Wed, 26 Apr 2017 14:49:08 GMT
+ * @version 1.0.0-alpha.4
+ * @date Sat, 15 Apr 2017 08:27:27 GMT
  * @link https://github.com/json-schema-form/angular-schema-form
  * @license MIT
  * Copyright (c) 2014-2017 JSON Schema Form
@@ -3294,7 +3274,7 @@ __WEBPACK_IMPORTED_MODULE_1_angular___default.a.module('schemaForm', deps)
 })
 
 // Directives
-.directive('sfChanged', __WEBPACK_IMPORTED_MODULE_7_sf_changed_directive__["a" /* default */]).directive('sfField', ['$parse', '$compile', '$http', '$templateCache', '$interpolate', '$q', 'sfErrorMessage', 'sfPath', 'sfSelect', __WEBPACK_IMPORTED_MODULE_8_sf_field_directive__["a" /* default */]]).directive('sfMessage', ['$injector', 'sfErrorMessage', __WEBPACK_IMPORTED_MODULE_9_sf_message_directive__["a" /* default */]]).directive('sfNewArray', ['sfSelect', 'sfPath', 'schemaForm', __WEBPACK_IMPORTED_MODULE_10_sf_array_directive__["a" /* default */]]).directive('sfSchema', ['$compile', '$http', '$templateCache', '$q', 'schemaForm', 'schemaFormDecorators', 'sfSelect', 'sfPath', 'sfBuilder', __WEBPACK_IMPORTED_MODULE_12_sf_schema_directive__["a" /* default */]]).directive('schemaValidate', ['sfValidator', '$parse', 'sfSelect', '$interpolate', __WEBPACK_IMPORTED_MODULE_13_schema_validate_directive__["a" /* default */]]).directive('sfKeyController', ['schemaForm', 'sfPath', __WEBPACK_IMPORTED_MODULE_11_sf_key_directive__["a" /* default */]]);
+.directive('sfChanged', __WEBPACK_IMPORTED_MODULE_7_sf_changed_directive__["a" /* default */]).directive('sfField', ['$parse', '$compile', '$http', '$templateCache', '$interpolate', '$q', 'sfErrorMessage', 'sfPath', 'sfSelect', __WEBPACK_IMPORTED_MODULE_8_sf_field_directive__["a" /* default */]]).directive('sfMessage', ['$injector', 'sfErrorMessage', __WEBPACK_IMPORTED_MODULE_9_sf_message_directive__["a" /* default */]]).directive('sfNewArray', ['sfSelect', 'sfPath', 'schemaForm', __WEBPACK_IMPORTED_MODULE_10_sf_array_directive__["a" /* default */]]).directive('sfSchema', ['$compile', '$http', '$templateCache', '$q', 'schemaForm', 'schemaFormDecorators', 'sfSelect', 'sfPath', 'sfBuilder', __WEBPACK_IMPORTED_MODULE_12_sf_schema_directive__["a" /* default */]]).directive('schemaValidate', ['sfValidator', '$parse', 'sfSelect', __WEBPACK_IMPORTED_MODULE_13_schema_validate_directive__["a" /* default */]]).directive('sfKeyController', ['schemaForm', 'sfPath', __WEBPACK_IMPORTED_MODULE_11_sf_key_directive__["a" /* default */]]);
 
 /***/ }),
 /* 5 */
@@ -3305,7 +3285,7 @@ __WEBPACK_IMPORTED_MODULE_1_angular___default.a.module('schemaForm', deps)
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_angular___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_angular__);
 
 
-/* harmony default export */ __webpack_exports__["a"] = function (sfValidator, $parse, sfSelect, $interpolate) {
+/* harmony default export */ __webpack_exports__["a"] = function (sfValidator, $parse, sfSelect) {
   return {
     restrict: 'A',
     scope: false,
@@ -3322,26 +3302,15 @@ __WEBPACK_IMPORTED_MODULE_1_angular___default.a.module('schemaForm', deps)
       var error = null;
       var form = scope.$eval(attrs.schemaValidate);
 
-      //TODO move this out of validate
-      var copyTo = typeof form.copyValueTo === 'string' ? [form.copyValueTo] : form.copyValueTo;
-      if (copyTo && copyTo.length) {
+      if (form.copyValueTo) {
         ngModel.$viewChangeListeners.push(function () {
-          var context = {
-            "model": scope.model,
-            "form": form,
-            "arrayIndex": scope.$index,
-            "arrayIndices": scope.arrayIndices,
-            "path": scope.path,
-            "$i": scope.$i,
-            "$index": scope.$index
-          };
-          __WEBPACK_IMPORTED_MODULE_0_angular___default.a.forEach(copyTo, function (copyToPath) {
-            var path = copyToPath.replace(/\[/g, "[{{ ").replace(/\]/g, " }}]").replace(/^model\./, "");
-            path = $interpolate(path)(context);
+          var paths = form.copyValueTo;
+          __WEBPACK_IMPORTED_MODULE_0_angular___default.a.forEach(paths, function (path) {
             sfSelect(path, scope.model, ngModel.$modelValue);
           });
         });
       };
+
       // Validate against the schema.
 
       var validate = function validate(viewValue, triggered) {
@@ -6133,11 +6102,11 @@ module.exports = __webpack_require__(4);
 
 /***/ })
 /******/ ]);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).setImmediate, __webpack_require__(1).clearImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18).setImmediate, __webpack_require__(18).clearImmediate))
 
-/***/ },
+/***/ }),
 /* 20 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 // shim for using process in browser
 var process = module.exports = {};
@@ -6309,6 +6278,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -6321,14 +6294,234 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 
-/***/ },
-/* 21 */,
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
+    "use strict";
+
+    if (global.setImmediate) {
+        return;
+    }
+
+    var nextHandle = 1; // Spec says greater than zero
+    var tasksByHandle = {};
+    var currentlyRunningATask = false;
+    var doc = global.document;
+    var registerImmediate;
+
+    function setImmediate(callback) {
+      // Callback can either be a function or a string
+      if (typeof callback !== "function") {
+        callback = new Function("" + callback);
+      }
+      // Copy function arguments
+      var args = new Array(arguments.length - 1);
+      for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i + 1];
+      }
+      // Store and register the task
+      var task = { callback: callback, args: args };
+      tasksByHandle[nextHandle] = task;
+      registerImmediate(nextHandle);
+      return nextHandle++;
+    }
+
+    function clearImmediate(handle) {
+        delete tasksByHandle[handle];
+    }
+
+    function run(task) {
+        var callback = task.callback;
+        var args = task.args;
+        switch (args.length) {
+        case 0:
+            callback();
+            break;
+        case 1:
+            callback(args[0]);
+            break;
+        case 2:
+            callback(args[0], args[1]);
+            break;
+        case 3:
+            callback(args[0], args[1], args[2]);
+            break;
+        default:
+            callback.apply(undefined, args);
+            break;
+        }
+    }
+
+    function runIfPresent(handle) {
+        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+        // So if we're currently running a task, we'll need to delay this invocation.
+        if (currentlyRunningATask) {
+            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+            // "too much recursion" error.
+            setTimeout(runIfPresent, 0, handle);
+        } else {
+            var task = tasksByHandle[handle];
+            if (task) {
+                currentlyRunningATask = true;
+                try {
+                    run(task);
+                } finally {
+                    clearImmediate(handle);
+                    currentlyRunningATask = false;
+                }
+            }
+        }
+    }
+
+    function installNextTickImplementation() {
+        registerImmediate = function(handle) {
+            process.nextTick(function () { runIfPresent(handle); });
+        };
+    }
+
+    function canUsePostMessage() {
+        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+        // where `global.postMessage` means something completely different and can't be used for this purpose.
+        if (global.postMessage && !global.importScripts) {
+            var postMessageIsAsynchronous = true;
+            var oldOnMessage = global.onmessage;
+            global.onmessage = function() {
+                postMessageIsAsynchronous = false;
+            };
+            global.postMessage("", "*");
+            global.onmessage = oldOnMessage;
+            return postMessageIsAsynchronous;
+        }
+    }
+
+    function installPostMessageImplementation() {
+        // Installs an event handler on `global` for the `message` event: see
+        // * https://developer.mozilla.org/en/DOM/window.postMessage
+        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+        var messagePrefix = "setImmediate$" + Math.random() + "$";
+        var onGlobalMessage = function(event) {
+            if (event.source === global &&
+                typeof event.data === "string" &&
+                event.data.indexOf(messagePrefix) === 0) {
+                runIfPresent(+event.data.slice(messagePrefix.length));
+            }
+        };
+
+        if (global.addEventListener) {
+            global.addEventListener("message", onGlobalMessage, false);
+        } else {
+            global.attachEvent("onmessage", onGlobalMessage);
+        }
+
+        registerImmediate = function(handle) {
+            global.postMessage(messagePrefix + handle, "*");
+        };
+    }
+
+    function installMessageChannelImplementation() {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+            var handle = event.data;
+            runIfPresent(handle);
+        };
+
+        registerImmediate = function(handle) {
+            channel.port2.postMessage(handle);
+        };
+    }
+
+    function installReadyStateChangeImplementation() {
+        var html = doc.documentElement;
+        registerImmediate = function(handle) {
+            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+            var script = doc.createElement("script");
+            script.onreadystatechange = function () {
+                runIfPresent(handle);
+                script.onreadystatechange = null;
+                html.removeChild(script);
+                script = null;
+            };
+            html.appendChild(script);
+        };
+    }
+
+    function installSetTimeoutImplementation() {
+        registerImmediate = function(handle) {
+            setTimeout(runIfPresent, 0, handle);
+        };
+    }
+
+    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+    // Don't get fooled by e.g. browserify environments.
+    if ({}.toString.call(global.process) === "[object process]") {
+        // For Node.js before 0.9
+        installNextTickImplementation();
+
+    } else if (canUsePostMessage()) {
+        // For non-IE10 modern browsers
+        installPostMessageImplementation();
+
+    } else if (global.MessageChannel) {
+        // For web workers, where supported
+        installMessageChannelImplementation();
+
+    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+        // For IE 6–8
+        installReadyStateChangeImplementation();
+
+    } else {
+        // For older browsers
+        installSetTimeoutImplementation();
+    }
+
+    attachTo.setImmediate = setImmediate;
+    attachTo.clearImmediate = clearImmediate;
+}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22), __webpack_require__(20)))
+
+/***/ }),
 /* 22 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 23 */,
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(19);
 module.exports = __webpack_require__(0);
 
 
-/***/ }
+/***/ })
 /******/ ]);

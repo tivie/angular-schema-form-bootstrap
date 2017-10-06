@@ -1,25 +1,36 @@
-<div class="form-group {{::form.htmlClass + ' schema-form-' + form.type + ' ' + idClass}}"
+<div class="form-group row {{::form.htmlClass + ' schema-form-' + form.type + ' ' + idClass}}"
      ng-class="{
        'has-error': form.disableErrorState !== true && hasError(),
        'has-success': form.disableSuccessState !== true && hasSuccess(),
        'has-feedback': form.feedback !== false,
        'required': form.required === true
      }">
-  <label class="control-label {{::form.labelHtmlClass}}" ng-class="{'sr-only': !showTitle()}" for="{{::fieldId(true, false)}}">{{form.title}}</label>
+  <label class="control-label col-sm-2 col-form-label {{::form.labelHtmlClass}}" ng-class="{'sr-only': !showTitle()}" for="{{::fieldId(true, false)}}">{{form.title}}</label>
 
-  <input ng-if="!form.fieldAddonLeft && !form.fieldAddonRight"
-         ng-show="::form.key"
-         type="{{::form.type}}"
-         step="any"
-         sf-changed="form"
-         placeholder="{{::form.placeholder}}"
-         class="form-control {{::form.fieldHtmlClass}}"
-         id="{{::fieldId(true, false)}}"
-         sf-field-model
-         ng-disabled="form.readonly"
-         schema-validate="form"
-         name="{{::fieldId(true, false)}}"
-         aria-describedby="{{::fieldId(true, true) + '-status'}}">
+  <div class="col-sm-10">
+    <input ng-if="!form.fieldAddonLeft && !form.fieldAddonRight"
+           ng-show="::form.key"
+           type="{{::form.type}}"
+           step="any"
+           sf-changed="form"
+           placeholder="{{::form.placeholder}}"
+           class="form-control {{::form.fieldHtmlClass}}"
+           id="{{::fieldId(true, false)}}"
+           sf-field-model
+           ng-disabled="form.readonly"
+           schema-validate="form"
+           name="{{::fieldId(true, false)}}"
+           aria-describedby="{{::fieldId(true, true) + '-status'}}">
+
+    <span ng-if="form.feedback !== false"
+          class="form-control-feedback"
+          ng-class="evalInScope(form.feedback) || {'glyphicon': true, 'glyphicon-ok': form.disableSuccessState !== true && hasSuccess(), 'glyphicon-remove': form.disableErrorState !== true && hasError() }"
+          aria-hidden="true"></span>
+
+    <span ng-if="hasError() || hasSuccess()"
+          id="{{::fieldId(true, true) + '-status'}}"
+          class="sr-only">{{ hasSuccess() ? '(success)' : '(error)' }}</span>
+  </div>
 
   <div ng-if="form.fieldAddonLeft || form.fieldAddonRight"
        ng-class="{'input-group': (form.fieldAddonLeft || form.fieldAddonRight)}">
@@ -43,15 +54,6 @@
           class="input-group-addon"
           ng-bind-html="form.fieldAddonRight"></span>
   </div>
-
-  <span ng-if="form.feedback !== false"
-        class="form-control-feedback"
-        ng-class="evalInScope(form.feedback) || {'glyphicon': true, 'glyphicon-ok': form.disableSuccessState !== true && hasSuccess(), 'glyphicon-remove': form.disableErrorState !== true && hasError() }"
-        aria-hidden="true"></span>
-
-  <span ng-if="hasError() || hasSuccess()"
-        id="{{::fieldId(true, true) + '-status'}}"
-        class="sr-only">{{ hasSuccess() ? '(success)' : '(error)' }}</span>
 
   <div class="help-block" sf-message="form.description"></div>
 </div>
