@@ -1,7 +1,7 @@
 /*!
  * angular-schema-form-bootstrap
  * @version 1.0.0-alpha.5
- * @date Fri, 06 Oct 2017 14:36:21 GMT
+ * @date Fri, 06 Oct 2017 15:02:58 GMT
  * @link https://github.com/json-schema-form/angular-schema-form-bootstrap
  * @license MIT
  * Copyright (c) 2014-2017 JSON Schema Form
