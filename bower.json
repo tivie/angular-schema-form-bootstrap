@@ -5,7 +5,7 @@
     "Marcel Bennett <iamanthropic@gmail.com>"
   ],
   "description": "Bootstrap 3 decorator for Angular Schema Form",
-  "main": "dist/bootstrap-decorator.js",
+  "main": "dist/angular-schema-form-bootstrap.js",
   "keywords": [
     "angular-schema-form-decorator",
     "json-schema",
